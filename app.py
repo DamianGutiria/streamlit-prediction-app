@@ -28,10 +28,23 @@ epocas = st.sidebar.slider("Selecciona las Épocas (Iteraciones RNA)", 10, 500, 
 test_size = st.sidebar.slider("Tamaño de prueba (%)", 10, 50, 20) / 100
 
 st.sidebar.divider()
-st.sidebar.header("⌨️ Datos para Predicción")
+st.sidebar.header("🖱️ Selecciona valores para predecir")
+
 input_data = {}
 for col in features:
-    input_data[col] = st.sidebar.number_input(f"Valor {col}", value=float(df[col].mean()))
+    # Creamos una lista de opciones basadas en los valores únicos o un rango del dataset
+    # Usamos np.linspace para crear 10 opciones entre el mínimo y el máximo de cada columna
+    opciones = np.linspace(df[col].min(), df[col].max(), num=10)
+    
+    # Formateamos a 2 decimales para que se vea limpio en la lista
+    opciones_formateadas = [round(float(x), 2) for x in opciones]
+    
+    # El selectbox reemplaza al number_input
+    input_data[col] = st.sidebar.selectbox(
+        f"Valor para {col}", 
+        options=opciones_formateadas,
+        index=5 # Valor por defecto (el del medio)
+    )
 
 # 4. PROCESAMIENTO
 X = df[features]
